@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<title>Numeric View</title>
+		<meta name="author" content="Mark Swoope">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=News+Cycle|Share+Tech+Mono&display=swap">
+		<link rel="stylesheet" href="sanitize/sanitize.css">
+		<link rel="stylesheet" href="sanitize/typography.css">
+		<link rel="stylesheet" href="sanitize/forms.css">
+		<link rel="stylesheet" href="main.css">
+		<script defer src="main.js"></script>
+	</head>
+	<body>
+		<header>
+			<h1>Numeric view</h1>
+			<p>See the value representation of a numeric data type.</p>
+		</header>
+		<main>
+			<div id="format">
+				<select id="signedness">
+					<option value="u">Unsigned</option>
+					<option value="s">Signed</option>
+				</select>
+				<select id="size">
+					<option value="8">8-bit</option>
+					<option value="16">16-bit</option>
+					<option value="32">32-bit</option>
+					<option value="64">64-bit</option>
+				</select>
+				<select id="type">
+					<option value="i">Integer</option>
+					<option value="f">Floating-point</option>
+				</select>
+				<select id="endian">
+					<option value="be">Big endian</option>
+					<option value="le">Little endian</option>
+				</select>
+			</div>
+			<div id="representation">
+				<table class="bitset">
+					<tbody id="bits"></tbody>
+				</table>
+			</div>
+			<div id="value-field-container">
+				<div class="value-field">
+					<label for="sign-value">Sign: </label><input id="sign-value">
+				</div>
+				<div class="value-field">
+					<label for="exponent-value">Exponent: </label><input id="exponent-value">
+				</div>
+				<div class="value-field">
+					<label for="fraction-value">Fraction: </label><input id="fraction-value">
+				</div>
+			</div>
+			<div id="final-value-field-container">
+				<div id="final-value-field">
+					<label for="final-value">Final value: </label><input id="final-value">
+				</div>
+			</div>
+			<div id="bit-controls">
+				<input id="clear-bits" type="button" value="Clear all bits">
+				<input id="set-bits" type="button" value="Set all bits">
+				<input id="flip-bits" type="button" value="Flip all bits">
+			</div>
+		</main>
+		<footer>
+			<p>Created by Mark Swoope (<a href="mailto:markswoope@outlook.com">markswoope@outlook.com</a>).</p>
+		</footer>
+	</body>
+</html>

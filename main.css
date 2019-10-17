@@ -1,0 +1,257 @@
+:root {
+	--fg-color: #1f1f1f;
+	--bg-color: #dfdfdf;
+	--link-color: #1f5f9f;
+	--font: 'News Cycle', sans-serif;
+	--bit-font: 'Share Tech Mono', monospace;
+	--bit-index-font: 'Share Tech Mono', monospace;
+	--value-font: 'Share Tech Mono', monospace;
+	--int-sign-bit-color: #bfb;
+	--int-sign-bit-hover-color: #9d9;
+	--int-bit-color: #fbb;
+	--int-bit-hover-color: #d99;
+	--float-sign-bit-color: #bbf;
+	--float-sign-bit-hover-color: #99d;
+	--float-exponent-bit-color: #bfb;
+	--float-exponent-bit-hover-color: #9d9;
+	--float-bit-color: #fbb;
+	--float-bit-hover-color: #d99;
+	--value-color: #ffb;
+	--value-hover-color: #dd9;
+	font-size: 18px;
+}
+
+body {
+	padding: 0.5em;
+	color: var(--fg-color);
+	background-color: var(--bg-color);
+	font-family: var(--font);
+}
+
+a {
+	color: var(--link-color);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+button,
+input,
+select,
+textarea {
+	margin: 0.25em 0;
+	border: thin solid var(--fg-color);
+}
+
+body>header,
+body>footer {
+	text-align: center;
+}
+#format,
+#representation,
+#value-field-container,
+#final-value-field-container,
+#bit-controls {
+	margin: 0 auto;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	width: auto;
+}
+
+#format>*,
+#representation>*,
+#value-field-container>*,
+#final-value-field-container>*,
+#bit-controls>* {
+	margin: 0.25em;
+}
+
+table.bitset {
+	display: block;
+	margin: 0.5em 0;
+	padding: 0;
+}
+
+table.bitset>tbody {
+	display: block;
+}
+
+table.bitset>tbody>tr {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0;
+	padding: 0;
+}
+
+table.bitset>tbody>tr>td {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+}
+
+table.bitset>tbody>tr>td>div.int-sign-bit,
+table.bitset>tbody>tr>td>div.int-bit,
+table.bitset>tbody>tr>td>div.float-sign-bit,
+table.bitset>tbody>tr>td>div.float-exponent-bit,
+table.bitset>tbody>tr>td>div.float-bit,
+table.bitset>tbody>tr>td>div.bit-index {
+	padding: 0.25em 0;
+	width: 2.5em;
+	text-align: center;
+}
+
+table.bitset>tbody>tr>td>div.bit-index {
+	font-family: var(--bit-index-font);
+}
+
+table.bitset>tbody>tr>td>div.int-sign-bit,
+table.bitset>tbody>tr>td>div.int-bit,
+table.bitset>tbody>tr>td>div.float-sign-bit,
+table.bitset>tbody>tr>td>div.float-exponent-bit,
+table.bitset>tbody>tr>td>div.float-bit {
+	border: thin solid;
+	border-right: none;
+	font-family: var(--bit-font);
+}
+
+table.bitset>tbody>tr>td:last-of-type>div:first-of-type {
+	border-right: thin solid;
+}
+
+table.bitset>tbody>tr>td>div.int-sign-bit {
+	background-color: var(--int-sign-bit-color);
+}
+
+table.bitset>tbody>tr>td>div.int-sign-bit:hover {
+	background-color: var(--int-sign-bit-hover-color);
+}
+
+table.bitset>tbody>tr>td>div.int-bit {
+	background-color: var(--int-bit-color);
+}
+
+table.bitset>tbody>tr>td>div.int-bit:hover {
+	background-color: var(--int-bit-hover-color);
+}
+
+table.bitset>tbody>tr>td>div.float-sign-bit {
+	background-color: var(--float-sign-bit-color);
+}
+
+table.bitset>tbody>tr>td>div.float-sign-bit:hover {
+	background-color: var(--float-sign-bit-hover-color);
+}
+
+table.bitset>tbody>tr>td>div.float-exponent-bit {
+	background-color: var(--float-exponent-bit-color);
+}
+
+table.bitset>tbody>tr>td>div.float-exponent-bit:hover {
+	background-color: var(--float-exponent-bit-hover-color);
+}
+
+table.bitset>tbody>tr>td>div.float-bit {
+	background-color: var(--float-bit-color);
+}
+
+table.bitset>tbody>tr>td>div.float-bit:hover {
+	background-color: var(--float-bit-hover-color);
+}
+
+
+/*
+.field label {
+	display: inline-block;
+	width: 50%;
+}
+
+.field input {
+	display: inline-block;
+	width: 50%;
+}
+*/
+
+/*
+#field-values>label {
+	display: block;
+}
+#field-values>input {
+	width: 100%;
+	max-width: 24em;
+	font-family: var(--value-font);
+}
+*/
+
+/*
+sup {
+	vertical-align: 1.5em;
+}
+*/
+
+#sign-value {
+	width: 1.5em;
+	background-color: var(--float-sign-bit-color);
+	text-align: center;
+}
+
+#sign-value:hover {
+	background-color: var(--float-sign-bit-hover-color);
+}
+
+#exponent-value {
+	width: 3.5em;
+	background-color: var(--float-exponent-bit-color);
+	text-align: center;
+}
+
+#exponent-value:hover {
+	background-color: var(--float-exponent-bit-hover-color);
+}
+
+#fraction-value {
+	width: 6em;
+	background-color: var(--float-bit-color);
+	text-align: center;
+}
+
+#fraction-value:hover {
+	background-color: var(--float-bit-hover-color);
+}
+
+/*
+#sign-value[disabled],
+#exponent-value[disabled],
+#fraction-value[disabled] {
+	background-color: var(--bg-color);
+}
+*/
+
+#value-field-container.hide {
+	display: none;
+}
+
+#final-value-field {
+	width: 100%;
+	max-width: 25.5em;
+}
+
+#final-value {
+	margin: 0 auto;
+	width: 100%;
+	background-color: var(--value-color);
+	text-align: center;
+}
+
+#final-value:hover {
+	background-color: var(--value-hover-color);
+}
+
+select[disabled],
+input[disabled] {
+	color: var(--bg-color);
+	background-color: var(--bg-color);
+}
+
