@@ -265,6 +265,7 @@
 		size.value = '32';
 		type.value = 'f';
 		updateFormat();
-		updateValueFields();
+		finalValue.value = Math.fround(Math.PI);
+		updateBitFields();
 	});
 })();
