@@ -54,6 +54,15 @@
 			this.internal.data.bits = bits;
 		}
 
+		updateDataValue()
+		{
+			const oldType = this.internal.data.type;
+			let value = Number(this.internal.elements.value.value);
+			if (oldType == ScalarStorage.type.f32) value = Math.fround(value);
+			this.internal.data.value = value;
+			this.internal.data.type = oldType;
+		}
+
 		updateControls()
 		{
 			const isFloat = (this.internal.elements.type.selectedIndex == 1);
@@ -315,6 +324,8 @@
 					this.renderValueFields();
 					this.renderBitValues();
 				});
+			this.internal.elements.value.addEventListener(
+				'click', (event) => { event.target.select(); });
 			[ /*'exponent', 'fraction',*/ 'value' ].forEach((id) => {
 				const updateValueFieldWidth = (target) => {
 					target.style.width = (target.value.length + 0.75) + 'em';
@@ -325,6 +336,12 @@
 					})
 				updateValueFieldWidth(this.internal.elements[id]);
 			});
+			this.internal.elements.value.addEventListener(
+				'change', (event) => {
+					this.updateDataValue();
+					this.renderValueFields();
+					this.renderBitValues();
+				});
 			this.update();
 			this.render();
 		}
