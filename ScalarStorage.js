@@ -475,14 +475,22 @@ class ScalarStorage {
 	increment()
 	{
 		const oldType = this.type;
-		this.value = this.value + 1;
+		if (this.type == ScalarStorage.type.f32) {
+			this.value = Math.fround(this.value + 1);
+		} else {
+			this.value = this.value + 1;
+		}
 		this.type = oldType;
 	}
 
 	decrement()
 	{
 		const oldType = this.type;
-		this.value = this.value - 1;
+		if (this.type == ScalarStorage.type.f32) {
+			this.value = Math.fround(this.value - 1);
+		} else {
+			this.value = this.value - 1;
+		}
 		this.type = oldType;
 	}
 
