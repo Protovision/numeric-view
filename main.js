@@ -1,271 +1,338 @@
-(() => {
-	window.addEventListener('DOMContentLoaded', async (event) => {
-		const signedness = document.getElementById('signedness');
-		const size = document.getElementById('size');
-		const type = document.getElementById('type');
-		const endian = document.getElementById('endian');
-		const bits = document.getElementById('bits');
-		const valueFieldContainer = document.getElementById('value-field-container');
-		const signValue = document.getElementById('sign-value');
-		const exponentValue = document.getElementById('exponent-value');
-		const fractionValue = document.getElementById('fraction-value');
-		const finalValue = document.getElementById('final-value');
-		const clearBits = document.getElementById('clear-bits');
-		const setBits = document.getElementById('set-bits');
-		const flipBits = document.getElementById('flip-bits');
+(() => {	
+	class ScalarStorageUserInterface {
 
-		const buffer = new ArrayBuffer(8);
-		const view = new DataView(buffer);
+		updateDataSignedness()
+		{
+			this.internal.data.signedness = 
+				this.internal.elements.signedness.value == 'signed' ?
+				ScalarStorage.signedness.signed :
+				ScalarStorage.signedness.unsigned;
+		}
 
-		const updateValueFields = () => {
-			const bitLength = Number(size.value);
-			const bytes = [];
-			let uint8;
-			let i = 0;
-			while (i < bitLength) {
-				uint8 = 0;
-				let j;
-				for (j = 0; j < 8; ++j) {
-					const bitValue = Number(document.getElementById('b' + (i + j)).textContent);
-					uint8 |= ((1 & bitValue) << j);
-				}
-				bytes.push(uint8);
-				i += j;
-			}
-			let littleEndian = true;
-			if (endian.value == 'be') {
-				bytes.reverse();
-				littleEndian = false;	
-			}
-			for (let i = 0; i < bytes.length; ++i) {
-				view.setUint8(i, bytes[i]);				
-			}
-			if (type.value == 'i') {
-				if (signedness.value == 's') {
-					switch (bitLength) {
-					case 8:
-						finalValue.value = view.getInt8();
-						break;
-					case 16:
-						finalValue.value = view.getInt16(0, littleEndian);
-						break;
-					case 32:
-						finalValue.value = view.getInt32(0, littleEndian);
-						break;
-					default: 
-						break;
-					}
-				} else if (signedness.value == 'u') {
-					switch (bitLength) {
-					case 8:
-						finalValue.value = view.getUint8();
-						break;
-					case 16:
-						finalValue.value = view.getUint16(0, littleEndian);
-						break;
-					case 32:
-						finalValue.value = view.getUint32(0, littleEndian);
-						break;
-					default: 
-						break;
-					}
-				}
-			} else if (type.value == 'f') {
-				if (bitLength == 32) {
-					finalValue.value = view.getFloat32(0, littleEndian);
-				} else if (bitLength == 64) {
-					finalValue.value = view.getFloat64(0, littleEndian);
-				}
-			}
-		};
-
-		const updateBitFields = () => {
-			const bitLength = Number(size.value);
-			const littleEndian = endian.value == 'be' ? false : true;
-			const value = Number(finalValue.value);
-			if (type.value == 'i') {
-				if (signedness.value == 's') {
-					switch (bitLength) {
-					case 8:
-						view.setInt8(0, value);
-						break;
-					case 16:
-						view.setInt16(0, value, littleEndian);
-						break;
-					case 32:
-						view.setInt32(0, value, littleEndian);
-						break;
-					default:
-						break;
-					}
-				} else if (signedness.value == 'u') {
-					switch (bitLength) {
-					case 8:
-						view.setUint8(0, value);
-						break;
-					case 16:
-						view.setUint16(0, value, littleEndian);
-						break;
-					case 32:
-						view.setUint32(0, value, littleEndian);
-						break;
-					default:
-						break;
-					}
-				}
-			} else if (type.value == 'f') {
-				if (bitLength == 32) {
-					view.setFloat32(0, value, littleEndian);
-				} else if (bitLength == 64) {
-					view.setFloat64(0, value, littleEndian);
-				}
-			}
-			const bytes = [];
-			for (let i = 0; i < bitLength / 8; ++i) {
-				bytes.push(view.getUint8(i));
-			}
-			if (littleEndian) {
-				bytes.reverse();
-			}
-			for (let i = 0; i < bitLength; ) {
-				let uint8 = bytes.pop();
-				let j;
-				for (j = 0; j < 8; ++j) {
-					document.getElementById('b' + (i + j)).textContent = (uint8 & (1 << j)) != 0 ? '1' : '0';
-				}
-				i += j;
-			}
-		};
-
-		const updateBit = (bit) => {
-			const newValue = document.createTextNode(
-				Number(bit.lastChild.textContent) == '1' ? '0' : '1');
-			bit.replaceChild(newValue, bit.lastChild);
-			updateValueFields();
-		};
-
-		const updateFormat = () => {
-			switch (type.value) {
-			case 'i':
-				signedness.disabled = false;
-				if (Number(size.value) > 32) { size.value = '32'; }
-				document.querySelectorAll('#size>option').
-					forEach(e => e.disabled = false);
-				document.querySelector('#size>option[value="64"]').disabled = true;
-				valueFieldContainer.classList.add('hide');
+		updateDataSize()
+		{
+			switch (Number(this.internal.elements.size.value)) {
+			case 8:
+				this.internal.data.size = 1;
 				break;
-			case 'f':
-				signedness.disabled = true;
-				if (Number(size.value) < 32) { size.value = '32'; }
-				document.querySelectorAll(
-						'#size>option[value="4"],' +
-						'#size>option[value="8"],' +
-						'#size>option[value="16"]').
-					forEach(e => e.disabled = true);
-				document.querySelector('#size>option[value="64"]').disabled = false;
-				/*valueFieldContainer.classList.remove('hide');*/
-				valueFieldContainer.classList.add('hide');
+			case 16:
+				this.internal.data.size = 2;
 				break;
-			default:
+			case 32:
+				this.internal.data.size = 4;
+				break;
+			case 64:
+				this.internal.data.size = 8;
 				break;
 			}
-			if (bits.lastChild) { bits.removeChild(bits.lastChild); }
-			const makeBit = (bitIndex, bitValue) => {
-				const td = document.createElement('td');
-				const divBit = document.createElement('div');
-				divBit.id = 'b' + bitIndex;
-				divBit.appendChild(document.createTextNode(bitValue));
-				divBit.addEventListener('click', (event) => {
-					updateBit(event.target);
-				});
-				const divIndex = document.createElement('div');
-				divIndex.classList.add('bit-index');
-				divIndex.appendChild(document.createTextNode(bitIndex));
-				td.appendChild(divBit);
-				td.appendChild(divIndex);
-				return td;
+		}
+
+		updateDataCategory()
+		{
+			this.internal.data.category =
+				this.internal.elements.type.value == 'int' ?
+				ScalarStorage.category.integral :
+				ScalarStorage.category.floatingPoint;
+		}
+
+		updateDataEndianness()
+		{
+			this.internal.data.endianness =
+				this.internal.elements.endianness.value == 'big' ?
+				ScalarStorage.endianness.bigEndian :
+				ScalarStorage.endianness.littleEndian;
+		}
+
+		updateDataBits()
+		{
+			const bits = [];
+			const cells = this.internal.elements.bits.parentNode.rows
+				.item(0).cells;
+			for (let i = 0; i < cells.length; ++i) {
+				bits.push(Number(cells.item(i).firstChild.textContent));
+			}
+			this.internal.data.bits = bits;
+		}
+
+		updateControls()
+		{
+			const isFloat = (this.internal.elements.type.selectedIndex == 1);
+			const toggleHidden = (element, bool) => {
+				element.disabled = bool;
+				element.classList.toggle('hidden', bool);
 			};
+			toggleHidden(this.internal.optionElements.signednessUnsigned, 
+				isFloat);
+			toggleHidden(this.internal.optionElements.size8, isFloat);
+			toggleHidden(this.internal.optionElements.size16, isFloat);
+			toggleHidden(this.internal.optionElements.size64, !isFloat);
+			const adjustToLastEnabledOption = (selectElement) => {
+				if (selectElement.options.item(
+						selectElement.selectedIndex).disabled) {
+					for (let i = selectElement.options.length; i > 0; ) {
+						--i;
+						if (!selectElement.options.item(i).disabled) {
+							selectElement.selectedIndex = i;
+							return;
+						}
+					}
+				}
+			};
+			adjustToLastEnabledOption(this.internal.elements.signedness);
+			adjustToLastEnabledOption(this.internal.elements.size);
+			toggleHidden(this.internal.elements.flip, isFloat);
+			toggleHidden(this.internal.elements.shiftLeft, isFloat);
+			toggleHidden(this.internal.elements.shiftRight, isFloat);
+		}
+
+		renderValueFields()
+		{
+			this.internal.elements.value.value = this.internal.data.value;
+			this.internal.elements.value.style.width = 
+				(this.internal.elements.value.value.length + 0.75) + 'em';
+		}
+
+		renderBitBoxes()
+		{
+			this.internal.elements['bits'].parentNode.deleteRow(0);
 			const fragment = document.createDocumentFragment();
 			const tr = document.createElement('tr');
-			if (endian.value == 'be') {
-				let index = Number(size.value);
-				while (index > 0) {
-					tr.appendChild(makeBit(--index, '0'));
-				}
-			} else {
-				let index = 0;
-				const end = Number(size.value);
-				while (index < end) {
-					tr.appendChild(makeBit(index++, '0'));
-				}
+			for (let i = 0; i < this.internal.data.size * 8; ++i) {
+				const td = document.createElement('td');
+				const bitValueDiv = document.createElement('div');
+				bitValueDiv.appendChild(document.createTextNode(''));
+				bitValueDiv.addEventListener(
+					'click', (event) => {
+						event.target.textContent = 
+							(event.target.textContent == '0' ? '1' : '0');
+						this.updateDataBits();
+						this.renderValueFields();
+						this.renderBitValues();
+					});
+				const bitPositionDiv = document.createElement('div');
+				bitPositionDiv.appendChild(document.createTextNode(''));
+				td.appendChild(bitValueDiv);
+				td.appendChild(bitPositionDiv);
+				tr.appendChild(td);
 			}
 			fragment.appendChild(tr);
-			if (type.value == 'i') {
-				let index = Number(size.value);
-				if (signedness.value == 's') {
-					fragment.getElementById('b' + (--index)).classList.add('int-sign-bit');
-				}
-				while (index != 0) {
-					fragment.getElementById('b' + (--index)).classList.add('int-bit');
-				}
-			} else if (type.value == 'f') {
-				let index = Number(size.value);
-				fragment.getElementById('b' + (--index)).classList.add('float-sign-bit');
-				let end = Number(size.value) == 64 ? 52 : 23;
-				while (index != end) {
-					fragment.getElementById('b' + (--index)).classList.add('float-exponent-bit');
-				}
-				while (index != 0) {
-					fragment.getElementById('b' + (--index)).classList.add('float-bit');
-				}
-			}
-			bits.appendChild(fragment);
-		};
-
-
-		const clearAllBits = () => {
-			const bitLength = Number(size.value);
-			for (let i = 0; i < bitLength; ++i) {
-				document.getElementById('b' + i).textContent = '0';
-			}
-			updateValueFields();
-		};
-
-		const setAllBits = () => {
-			const bitLength = Number(size.value);
-			for (let i = 0; i < bitLength; ++i) {
-				document.getElementById('b' + i).textContent = '1';
-			}
-			updateValueFields();
+			this.internal.elements['bits'].appendChild(fragment);
 		}
 
-		const flipAllBits = () => {
-			const bitLength = Number(size.value);
-			for (let i = 0; i < bitLength; ++i) {
-				const bit = document.getElementById('b' + i);
-				bit.textContent = bit.textContent == '0' ? '1' : '0';
+		renderBitValues()
+		{
+			const bits = this.internal.data.bits;
+			const cells = this.internal.elements.bits.parentNode.rows
+				.item(0).cells;
+			for (let i = 0; i < bits.length; ++i) {
+				cells.item(i).firstChild.textContent = bits[i];
 			}
-			updateValueFields();
 		}
 
-		[signedness, size, type, endian].forEach(e => 
-			e.addEventListener('change', (event) => { updateFormat(); updateValueFields(); }));
-		[signValue, exponentValue, fractionValue, finalValue].forEach(e => 
-			e.addEventListener('click', (event) => { event.target.select(); }));
+		renderBitPositions()
+		{
+			const cells = this.internal.elements.bits.parentNode.rows
+				.item(0).cells;
+			if (this.internal.data.endianness == 
+					ScalarStorage.endianness.littleEndian) {
+				for (let i = 0; i < cells.length; ++i) {
+					cells.item(i).lastChild.textContent = i;
+				}
+			} else {
+				for (let i = 0, id = cells.length; i < cells.length; ++i) {
+					cells.item(i).lastChild.textContent = --id;
+				}
+			}
+		}
 
-		finalValue.addEventListener('input', (event) => {
-			updateBitFields();
-		});
+		renderBitColors()
+		{
+			const cells = this.internal.elements.bits.parentNode.rows
+				.item(0).cells;
+			const isLittleEndian = (this.internal.data.endianness ==
+				ScalarStorage.endianness.littleEndian);
+			const signBitIndex = (isLittleEndian ?
+				(this.internal.data.size * 8 - 1) : 0);
+			const isSigned  = (this.internal.data.signedness ==
+					ScalarStorage.signedness.signed);
+			const colorClasses = [
+				'int-sign-bit',
+				'int-bit',
+				'float-sign-bit',
+				'float-exponent-bit',
+				'float-fraction-bit'
+			];
+			for (let i = 0; i < cells.length; ++i) {
+				colorClasses.forEach((c) => {
+					cells.item(i).firstChild.classList.remove(c);
+				});
+			}
+			if (this.internal.data.category == 
+					ScalarStorage.category.integral) {
+				for (let i = 0; i < cells.length; ++i) {
+					cells.item(i).firstChild.classList.add('int-bit');
+				}
+				if (isSigned) {
+					cells.item(signBitIndex).firstChild.classList.replace(
+						'int-bit', 'int-sign-bit');
+				}
+			} else {
+				cells.item(signBitIndex).firstChild.classList.add(
+					'float-sign-bit');
+				if (!isLittleEndian) {
+					const fractionBitsIndex = 
+						(this.internal.data.size == 4) ? 9 : 12;
+					for (let i = 1; i < fractionBitsIndex; ++i) {
+						cells.item(i).firstChild.classList.add(
+							'float-exponent-bit');
+					}
+					for (let i = fractionBitsIndex; i < cells.length; ++i) {
+						cells.item(i).firstChild.classList.add(
+							'float-fraction-bit');
+					}
+				} else {
+					const exponentBitsIndex = 
+						(this.internal.data.size == 4) ? 31 : 63;
+					const fractionBitsIndex = 
+						(this.internal.data.size == 4) ? 23 : 52;
+					for (let i = exponentBitsIndex; 
+							i > fractionBitsIndex; ) {
+						--i;
+						cells.item(i).firstChild.classList.add(
+							'float-exponent-bit');
+					}
+					for (let i = fractionBitsIndex; i > 0; ) {
+						--i;
+						cells.item(i).firstChild.classList.add(
+							'float-fraction-bit');
+					}
+				}
+			}
+		}
 
-		clearBits.addEventListener('click', (event) => { clearAllBits(); });
-		setBits.addEventListener('click', (event) => { setAllBits(); });
-		flipBits.addEventListener('click', (event) => {flipAllBits(); });
+		update()
+		{
+			this.updateControls();
+			this.updateDataCategory();
+			this.updateDataSize();
+			this.updateDataSignedness();
+			this.updateDataEndianness();
+		}
 
-		signedness.value = 'u';
-		size.value = '32';
-		type.value = 'f';
-		updateFormat();
-		finalValue.value = Math.fround(Math.PI);
-		updateBitFields();
+		render()
+		{
+			this.renderValueFields();
+			this.renderBitBoxes();
+			this.renderBitPositions();
+			this.renderBitValues();
+			this.renderBitColors();
+		}
+
+		constructor(scalarStorage)
+		{
+			this.internal = {
+				data: scalarStorage,
+				elements: [
+					'signedness',
+					'size',
+					'type',
+					'endianness',
+					'bits',
+					'clear',
+					'flip',
+					'shiftLeft',
+					'shiftRight',
+					'increment',
+					'decrement',
+					/*
+					'sign',
+					'exponent',
+					'fraction',
+					*/
+					'value'
+				].reduce((map, key) => {
+					map[key] = document.getElementById(key);
+					return map;
+				}, {}),
+				optionElements: [
+					[ 'signednessUnsigned',
+						'#signedness>option[value="unsigned"]' ],
+					[ 'size8', '#size>option[value="8"]' ],
+					[ 'size16', '#size>option[value="16"]' ],
+					[ 'size32', '#size>option[value="32"]' ],
+					[ 'size64', '#size>option[value="64"]' ]
+				].reduce((map, key) => {
+					map[key[0]] = document.querySelector(key[1]);
+					return map;
+				}, {})
+			};
+			this.internal.elements.signedness.addEventListener(
+				'change', (event) => {
+					this.updateDataSignedness();
+					this.renderValueFields();
+					this.renderBitValues();
+					this.renderBitColors();
+				});
+			this.internal.elements.size.addEventListener(
+				'change', (event) => {
+					this.updateDataSize();
+					this.render();
+				});
+			this.internal.elements.type.addEventListener(
+				'change', (event) => {
+					this.update();
+					this.render();
+				});
+			this.internal.elements.endianness.addEventListener(
+				'change', (event) => {
+					this.updateDataEndianness();
+					this.renderBitValues();
+					this.renderBitPositions();
+					this.renderBitColors();
+				});
+			[
+				'clear',
+				'flip',
+				'increment',
+				'decrement'
+			].forEach((id) => {
+				this.internal.elements[id].addEventListener(
+					'click', (event) => {
+						this.internal.data[id]();
+						this.renderBitValues();
+						this.renderValueFields();
+					});
+			});
+			this.internal.elements.shiftLeft.addEventListener(
+				'click', (event) => {
+					this.internal.data.shiftLeft(1);
+					this.renderValueFields();
+					this.renderBitValues();
+				});
+			this.internal.elements.shiftRight.addEventListener(
+				'click', (event) => {
+					this.internal.data.shiftRight(1);
+					this.renderValueFields();
+					this.renderBitValues();
+				});
+			[ /*'exponent', 'fraction',*/ 'value' ].forEach((id) => {
+				const updateValueFieldWidth = (target) => {
+					target.style.width = (target.value.length + 0.75) + 'em';
+				}
+				this.internal.elements[id].addEventListener(
+					'input', (event) => {
+						updateValueFieldWidth(event.target);
+					})
+				updateValueFieldWidth(this.internal.elements[id]);
+			});
+			this.update();
+			this.render();
+		}
+	};
+
+	window.addEventListener('DOMContentLoaded', async () => {
+		const data = new ScalarStorage;
+		const ui = new ScalarStorageUserInterface(data);
 	});
+
 })();

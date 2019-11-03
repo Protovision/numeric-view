@@ -3,12 +3,13 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
-		<title>Numeric View</title>
+		<title>Numeric view</title>
 		<meta name="author" content="Mark Swoope">
 		<link rel="stylesheet" href="sanitize/sanitize.css">
 		<link rel="stylesheet" href="sanitize/typography.css">
 		<link rel="stylesheet" href="sanitize/forms.css">
 		<link rel="stylesheet" href="main.css">
+		<script defer src="ScalarStorage.js"></script>
 		<script defer src="main.js"></script>
 	</head>
 	<body>
@@ -17,10 +18,10 @@
 			<p>View binary representation of numeric values.</p>
 		</header>
 		<main>
-			<div id="format">
+			<div class="flex">
 				<select id="signedness">
-					<option value="u">Unsigned</option>
-					<option value="s">Signed</option>
+					<option value="signed">Signed</option>
+					<option value="unsigned">Unsigned</option>
 				</select>
 				<select id="size">
 					<option value="8">8-bit</option>
@@ -29,39 +30,46 @@
 					<option value="64">64-bit</option>
 				</select>
 				<select id="type">
-					<option value="i">Integer</option>
-					<option value="f">Floating-point</option>
+					<option value="int">Integer</option>
+					<option value="float">Floating-point</option>
 				</select>
-				<select id="endian">
-					<option value="be">Big endian</option>
-					<option value="le">Little endian</option>
+				<select id="endianness">
+					<option value="big">Big endian</option>
+					<option value="little">Little endian</option>
 				</select>
 			</div>
-			<div id="representation">
-				<table class="bitset">
-					<tbody id="bits"></tbody>
+			<div class="flex">
+				<table class="block">
+					<tbody id="bits" class="block"><tr></tr></tbody>
 				</table>
 			</div>
-			<div id="value-field-container">
-				<div class="value-field">
-					<label for="sign-value">Sign: </label><input id="sign-value">
-				</div>
-				<div class="value-field">
-					<label for="exponent-value">Exponent: </label><input id="exponent-value">
-				</div>
-				<div class="value-field">
-					<label for="fraction-value">Fraction: </label><input id="fraction-value">
-				</div>
+			<div class="flex">
+				<input id="clear" type="button" value="Clear">
+				<input id="flip" type="button" value="Flip">
+				<input id="shiftLeft" type="button" value="Shift left">
+				<input id="shiftRight" type="button" value="Shift right">
+				<input id="increment" type="button" value="Increment">
+				<input id="decrement" type="button" value="Decrement">
 			</div>
-			<div id="final-value-field-container">
-				<div id="final-value-field">
-					<label for="final-value">Value: </label><input id="final-value" type="text">
+			<div class="flex">
+				<!--
+				<div>
+					<label for="sign">Sign: </label>
+					<input id="sign" type="text" maxlength="1">
 				</div>
-			</div>
-			<div id="bit-controls">
-				<input id="clear-bits" type="button" value="Clear all bits">
-				<input id="set-bits" type="button" value="Set all bits">
-				<input id="flip-bits" type="button" value="Flip all bits">
+				<div>
+					<label for="exponent">Exponent: </label>
+					<input id="exponent" type="text">
+				</div>
+				<div>
+					<label for="fraction">Fraction: </label>
+					<input id="fraction" type="text">
+				</div>
+				-->
+				<div>
+					<label for="value">Value: </label>
+					<input id="value" type="text">
+				</div>
 			</div>
 		</main>
 		<footer>
