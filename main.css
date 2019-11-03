@@ -41,12 +41,12 @@ body {
 }
 
 #bits>tr>td>div:first-of-type {
-	border: thin solid;
+	border: 1px solid #000;
 	border-right: none;
 }
 
 #bits>tr>td:last-of-type>div:first-of-type {
-	border-right: thin solid;
+	border-right: 1px solid #000;
 }
 
 input,
