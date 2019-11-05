@@ -2,9 +2,12 @@ body {
 	padding: 0.5em;
 	font-family: sans-serif;
 	text-align: center;
+	color #000;
+	background-color: #fff;
 }
 
 .flex {
+	margin: 0.25em 0;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
@@ -52,7 +55,18 @@ body {
 input,
 select {
 	border-color: #000;
+	border-radius: 0.25em;
 	text-align: center;
+}
+
+input:hover,
+select:hover {
+	background-color: #eee;
+}
+
+input:active,
+select:active {
+	background-color: #ddd;
 }
 
 input[type="text"] {
@@ -70,6 +84,10 @@ input[type="text"] {
 }
 
 .int-sign-bit:hover {
+	background-color: #aea;
+}
+
+.int-sign-bit:active {
 	background-color: #9d9;
 }
 
@@ -78,7 +96,11 @@ input[type="text"] {
 }
 
 .int-bit:hover {
-	background-color: #d99;
+	background-color: #eaa;
+}
+
+.int-bit:active {
+	background-color: #d99; 
 }
 
 .float-sign-bit {
@@ -86,6 +108,10 @@ input[type="text"] {
 }
 
 .float-sign-bit:hover {
+	background-color: #aae;
+}
+
+.float-sign-bit:active {
 	background-color: #99d;
 }
 
@@ -94,6 +120,10 @@ input[type="text"] {
 }
 
 .float-exponent-bit:hover {
+	background-color: #aea;
+}
+
+.float-exponent-bit:active {
 	background-color: #9d9;
 }
 
@@ -102,5 +132,9 @@ input[type="text"] {
 }
 
 .float-fraction-bit:hover {
+	background-color: #eaa;
+}
+
+.float-fraction-bit:active {
 	background-color: #d99;
 }
